@@ -4,6 +4,8 @@ import papermill as pm
 ticker_symbols = [
     "AAPL",
     "AMZN",
+    "ARKK",
+    "EXPE",
     "FB",
     "GOOG",
     "MSFT",
