@@ -8,10 +8,12 @@ ticker_symbols = [
     "EXPE",
     "FB",
     "GOOG",
+    "IAU",
     "MSFT",
     "O",
     "PLTR",
     "SBUX",
+    "TSLA",
 ]
 
 out_dir = "./out"
