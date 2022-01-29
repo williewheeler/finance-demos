@@ -1,3 +1,10 @@
+def add_sma_crossover(df):
+    copy = df.copy()
+    copy["SMA_50"] = copy["Close"].rolling(50).mean()
+    copy["SMA_200"] = copy["Close"].rolling(200).mean()
+    return copy
+
+
 def add_bollinger_bands(df):
     copy = df.copy()
     
@@ -25,5 +32,39 @@ def add_stochastic_oscillator(df, periods=14):
     
     # Slow stochastic indicator
     copy["%D"] = copy["%K"].rolling(3).mean()
+    
+    return copy
+
+
+# https://www.roelpeters.be/many-ways-to-calculate-the-rsi-in-python-pandas/
+def add_rsi(df, periods=14):
+    copy = df.copy()
+    
+    close_diff = copy["Close"].diff()
+    up = close_diff.clip(lower=0)
+    down = -1 * close_diff.clip(upper=0)
+
+    ma_up = up.ewm(com=periods-1, adjust=True, min_periods=periods).mean()
+    ma_down = down.ewm(com=periods-1, adjust=True, min_periods=periods).mean()
+
+    rsi = ma_up / ma_down
+    rsi = 100 - (100 / (1 + rsi))
+    copy["RSI"] = rsi
+    
+    return copy
+
+
+def add_macd(df):
+    copy = df.copy()
+    
+    ema_12 = copy["Close"].ewm(span=12, adjust=False, min_periods=12).mean()
+    ema_26 = copy["Close"].ewm(span=26, adjust=False, min_periods=26).mean()
+    macd = ema_12 - ema_26
+    signal = macd.ewm(span=9, adjust=False, min_periods=9).mean()
+    diff = macd - signal
+    
+    copy["MACD"] = macd
+    copy["MACD-s"] = signal
+    copy["MACD-h"] = diff
     
     return copy

@@ -35,6 +35,16 @@ def plot_candlestick(df, symbol, rng):
         style="yahoo")
 
 
+def plot_sma_crossover(df, symbol, rng):
+    start = date_ranges[rng]
+    end = today_str
+    temp_df = df[start:end][["Close", "SMA_50", "SMA_200"]]
+    temp_df.plot(
+        title=f"{symbol} SMA Crossover, {rng}",
+        style=["-", "-", "--"],
+        figsize=(8, 3))
+
+
 # TODO Support plotting against index and also peers
 def plot_capital_appreciation(df, symbol, rng):
     start = date_ranges[rng]
@@ -47,7 +57,7 @@ def plot_capital_appreciation(df, symbol, rng):
     })
     
     norm_df = comb_df.div(comb_df.iloc[0])
-    norm_df.plot(title=f"{symbol} capital appreciation, {rng}", figsize=(6, 3))
+    norm_df.plot(title=f"{symbol} capital appreciation, {rng}", figsize=(8, 3))
 
 
 def plot_bollinger(df, symbol, rng):
@@ -57,7 +67,7 @@ def plot_bollinger(df, symbol, rng):
     temp_df.plot(
         title=f"{symbol} with Bollinger Bands, {rng}",
         style=["-", "--", "-", "-"],
-        figsize=(6, 4))
+        figsize=(8, 3))
 
 
 def plot_stochastic_oscillator(df, symbol, rng, periods=14):
@@ -65,7 +75,7 @@ def plot_stochastic_oscillator(df, symbol, rng, periods=14):
     end = today_str
     temp_df = df[start:end]
     
-    fig, ax = plt.subplots(nrows=2, ncols=1, sharex=True, tight_layout=True, figsize=(6, 6))
+    fig, ax = plt.subplots(nrows=2, ncols=1, sharex=True, tight_layout=True, figsize=(8, 6))
 
     ax[0].set_title(f"{symbol} price, {rng}")
     ax[0].plot(temp_df["Close"], color="tab:blue")
@@ -74,7 +84,6 @@ def plot_stochastic_oscillator(df, symbol, rng, periods=14):
     ax[1].set_ylim(-10, 110)
     ax[1].plot(temp_df["%K"], color="tab:blue") # fast
     ax[1].plot(temp_df["%D"], color="tab:orange") # slow
-
     ax[1].axhline(80, color="tab:red", ls="--")
     ax[1].axhline(20, color="tab:green", ls="--")
 
@@ -85,3 +94,49 @@ def plot_stochastic_oscillator(df, symbol, rng, periods=14):
         Line2D([0], [0], color="tab:green", lw=4),
     ]
     ax[1].legend(custom_lines, ["%K", "%D", "Overbought", "Oversold"], loc="best")
+
+
+def plot_rsi(df, symbol, rng, periods=14):
+    start = date_ranges[rng]
+    end = today_str
+    temp_df = df[start:end]
+    
+    fig, ax = plt.subplots(nrows=2, ncols=1, sharex=True, tight_layout=True, figsize=(8, 6))
+
+    ax[0].set_title(f"{symbol} price, {rng}")
+    ax[0].plot(temp_df["Close"])
+
+    ax[1].set_title(f"{symbol} RSI ({periods}-day moving average), {rng}")
+    ax[1].set_ylim(0, 100)
+    ax[1].plot(temp_df["RSI"])
+    ax[1].axhline(70, color="tab:red", ls="--")
+    ax[1].axhline(30, color="tab:green", ls="--")
+
+    custom_lines = [
+        Line2D([0], [0], color="tab:red", lw=4),
+        Line2D([0], [0], color="tab:green", lw=4)
+    ]
+    ax[1].legend(custom_lines, ["Overbought", "Oversold"], loc="best")
+
+
+def plot_macd(df, symbol, rng, periods=14):
+    start = date_ranges[rng]
+    end = today_str
+    temp_df = df[start:end]
+    
+    fig, ax = plt.subplots(nrows=2, ncols=1, sharex=True, tight_layout=True, figsize=(8, 6))
+
+    ax[0].set_title(f"{symbol} price, {rng}")
+    ax[0].plot(temp_df["Close"])
+
+    ax[1].set_title(f"{symbol} MACD, {rng}")
+    ax[1].plot(temp_df["MACD"], color="tab:blue") # slow signal
+    ax[1].plot(temp_df["MACD-s"], color="tab:orange") # fast signal
+    ax[1].bar(temp_df.index, height=temp_df["MACD-h"], color="black") # diff
+
+    custom_lines = [
+        Line2D([0], [0], color="tab:blue", lw=4),
+        Line2D([0], [0], color="tab:orange", lw=4),
+        Line2D([0], [0], color="black", lw=4)
+    ]
+    ax[1].legend(custom_lines, ["MACD", "Signal", "Diff"], loc="best")
