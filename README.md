@@ -1,6 +1,6 @@
 # finance-demos
 
-**Disclaimer: This is not financial advise. Do your own research. Use at your own risk.**
+**Disclaimer: This is not financial advice. Do your own research. Use at your own risk.**
 
 Notebooks for financial experiments.
 
