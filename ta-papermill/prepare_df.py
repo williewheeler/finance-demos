@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def add_sma_crossover(df):
     copy = df.copy()
     copy["SMA_50"] = copy["Close"].rolling(50).mean()
@@ -67,4 +70,11 @@ def add_macd(df):
     copy["MACD-s"] = signal
     copy["MACD-h"] = diff
     
+    return copy
+
+
+def add_obv(df):
+    copy = df.copy()
+    # https://stackoverflow.com/a/66827219
+    copy["OBV"] = (np.sign(copy["Close"].diff()) * copy["Volume"]).fillna(0).cumsum()
     return copy

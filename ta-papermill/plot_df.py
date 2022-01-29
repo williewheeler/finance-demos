@@ -1,6 +1,7 @@
 import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import mplfinance as mpf
 
 from matplotlib.lines import Line2D
@@ -25,20 +26,21 @@ def plot_candlestick(df, symbol, rng):
     mpf.plot(
         df[start:end],
         type="candle",
-        title=f"{symbol} price, {rng}",
+        title=f"{symbol} Price, {rng}",
         ylabel="Price ($)",
         volume=True,
         ylabel_lower="Volume",
         show_nontrading=False,
         mav=(4),
-        figsize=(8, 4),
-        style="yahoo")
+        figsize=(8, 3),
+        style="yahoo",
+        datetime_format="%Y-%m-%d")
 
 
 def plot_sma_crossover(df, symbol, rng):
     start = date_ranges[rng]
     end = today_str
-    temp_df = df[start:end][["Close", "SMA_50", "SMA_200"]]
+    temp_df = df.loc[start:end, ["Close", "SMA_50", "SMA_200"]]
     temp_df.plot(
         title=f"{symbol} SMA Crossover, {rng}",
         style=["-", "-", "--"],
@@ -63,7 +65,7 @@ def plot_capital_appreciation(df, symbol, rng):
 def plot_bollinger(df, symbol, rng):
     start = date_ranges[rng]
     end = today_str
-    temp_df = df[start:end][["Close", "SMA_20", "UpperBB", "LowerBB"]]    
+    temp_df = df.loc[start:end, ["Close", "SMA_20", "UpperBB", "LowerBB"]]
     temp_df.plot(
         title=f"{symbol} with Bollinger Bands, {rng}",
         style=["-", "--", "-", "-"],
@@ -140,3 +142,29 @@ def plot_macd(df, symbol, rng, periods=14):
         Line2D([0], [0], color="black", lw=4)
     ]
     ax[1].legend(custom_lines, ["MACD", "Signal", "Diff"], loc="best")
+
+    
+def plot_obv(df, symbol, rng):    
+    start = date_ranges[rng]
+    end = today_str
+    temp_df = df[start:end]
+    
+    # See
+    # https://github.com/matplotlib/mplfinance/blob/master/examples/addplot.ipynb
+    # https://github.com/matplotlib/mplfinance/blob/8fa38f2dcd6d3b75c97145b5ded953f13641625e/src/mplfinance/plotting.py#L36
+    obv_addplot = mpf.make_addplot(temp_df["OBV"], width=2, panel=2, ylabel="OBV")
+    
+    # See https://github.com/DanielGoldfarb/mplfinance/blob/master/examples/panels.ipynb
+    mpf.plot(
+        temp_df,
+        addplot=obv_addplot,
+        type="candle",
+        title=f"{symbol} Price and On-Balance Volume, {rng}",
+        ylabel="Price ($)",
+        volume=True,
+        ylabel_lower="Volume",
+        show_nontrading=False,
+        style="yahoo",
+        figsize=(8, 4),
+        panel_ratios=(3, 1, 2),
+        datetime_format="%Y-%m-%d")
