@@ -5,6 +5,8 @@ ticker_symbols = [
     "AAPL",
     "AMZN",
     "ARKK",
+    "BTC-USD",
+    "ETH-USD",
     "EXPE",
     "FB",
     "GOOG",
