@@ -55,7 +55,7 @@ def plot_capital_appreciation(df, symbol, rng):
     # Combined frame with multiple tickers.
     # Currently there's just one but we want to add index and peers as indicated above.
     comb_df = pd.DataFrame({
-        symbol: df[start:end]["Close"],
+        symbol: df.loc[start:end, "Close"],
     })
     
     norm_df = comb_df.div(comb_df.iloc[0])
