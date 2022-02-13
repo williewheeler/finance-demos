@@ -10,7 +10,7 @@ yfinance = "*"
 mplfinance = "*"
 pandas-ta = "*"
 requests-cache = "*"
-pandas = "==1.3.5"
+pandas = "*"
 papermill = "*"
 
 [dev-packages]
